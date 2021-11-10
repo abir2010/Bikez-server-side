@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient } = require("mongodb");
+const ObjectId = require("mongodb").ObjectId;
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -22,9 +23,17 @@ async function run() {
     const database = client.db("bikez");
     const productsCollection = database.collection("products");
     const ordersCollection = database.collection("orders");
+    const reviewsCollection = database.collection("reviews");
     // GET API to get all the products
     app.get("/products", async (req, res) => {
       const cursor = productsCollection.find({});
+      const result = await cursor.toArray();
+      res.json(result);
+    });
+    // GET API to get all the orders
+    app.get("/orders", async (req, res) => {
+      const query = { userEmail: req.query.email };
+      const cursor = ordersCollection.find(query);
       const result = await cursor.toArray();
       res.json(result);
     });
@@ -32,6 +41,19 @@ async function run() {
     app.post("/orders", async (req, res) => {
       const doc = req.body;
       const result = await ordersCollection.insertOne(doc);
+      res.json(result);
+    });
+    // POST API to post reviews
+    app.post("/reviews", async (req, res) => {
+      const doc = req.body;
+      const result = await reviewsCollection.insertOne(doc);
+      res.json(result);
+    });
+    // DELETE API to delete specific order
+    app.delete("/orders", async (req, res) => {
+      const id = req.query.id;
+      const query = { _id: ObjectId(id) };
+      const result = await ordersCollection.deleteOne(query);
       res.json(result);
     });
   } finally {
