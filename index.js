@@ -37,6 +37,12 @@ async function run() {
       const result = await cursor.toArray();
       res.json(result);
     });
+    // GET API to get all the reviews
+    app.get("/reviews", async (req, res) => {
+      const cursor = reviewsCollection.find({});
+      const result = await cursor.toArray();
+      res.json(result);
+    });
     // POST API to post orders
     app.post("/orders", async (req, res) => {
       const doc = req.body;
@@ -45,6 +51,12 @@ async function run() {
     });
     // POST API to post reviews
     app.post("/reviews", async (req, res) => {
+      const doc = req.body;
+      const result = await reviewsCollection.insertOne(doc);
+      res.json(result);
+    });
+    // POST API to save users
+    app.post("/users", async (req, res) => {
       const doc = req.body;
       const result = await reviewsCollection.insertOne(doc);
       res.json(result);
