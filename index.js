@@ -44,6 +44,17 @@ async function run() {
       const result = await cursor.toArray();
       res.json(result);
     });
+    // GET API to find wheather admin or normal user
+    app.get("/users", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const cursor = await usersCollection.findOne(query);
+      let isAdmin = false;
+      if (cursor?.role === "Admin") {
+        isAdmin = true;
+      }
+      res.json({ admin: isAdmin });
+    });
     // POST API to post orders
     app.post("/orders", async (req, res) => {
       const doc = req.body;
