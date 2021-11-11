@@ -32,6 +32,12 @@ async function run() {
       res.json(result);
     });
     // GET API to get all the orders
+    app.get("/allorders", async (req, res) => {
+      const cursor = ordersCollection.find({});
+      const result = await cursor.toArray();
+      res.json(result);
+    });
+    // GET API to get all the orders of specific user
     app.get("/orders", async (req, res) => {
       const query = { userEmail: req.query.email };
       const cursor = ordersCollection.find(query);
@@ -73,6 +79,12 @@ async function run() {
       const result = await usersCollection.insertOne(doc);
       res.json(result);
     });
+    // POST API to add a new product
+    app.post("/products", async (req, res) => {
+      const doc = req.body;
+      const result = await productsCollection.insertOne(doc);
+      res.json(result);
+    });
     // PUT API to check user for google sign in
     app.put("/users", async (req, res) => {
       const email = req.body.email;
@@ -80,6 +92,32 @@ async function run() {
       const options = { upsert: true };
       const updateDoc = { $set: req.body };
       const result = await usersCollection.updateOne(query, updateDoc, options);
+      res.json(result);
+    });
+    // PUT API to update order status by admin
+    app.put("/orders", async (req, res) => {
+      const id = req.query.id;
+      const query = { _id: ObjectId(id) };
+      const updateStatus = {
+        $set: {
+          status: "Shipped",
+        },
+      };
+      const result = await ordersCollection.updateOne(query, updateStatus);
+      res.json(result);
+    });
+    // PUT API to make admin
+    app.put("/allusers", async (req, res) => {
+      const email = req.body.email;
+      console.log(email);
+      const filter = { email: email };
+      console.log(filter);
+      const updateDoc = {
+        $set: {
+          role: "Admin",
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc);
       res.json(result);
     });
     // DELETE API to delete specific order
