@@ -24,6 +24,7 @@ async function run() {
     const productsCollection = database.collection("products");
     const ordersCollection = database.collection("orders");
     const reviewsCollection = database.collection("reviews");
+    const usersCollection = database.collection("users");
     // GET API to get all the products
     app.get("/products", async (req, res) => {
       const cursor = productsCollection.find({});
@@ -58,7 +59,16 @@ async function run() {
     // POST API to save users
     app.post("/users", async (req, res) => {
       const doc = req.body;
-      const result = await reviewsCollection.insertOne(doc);
+      const result = await usersCollection.insertOne(doc);
+      res.json(result);
+    });
+    // PUT API to check user for google sign in
+    app.put("/users", async (req, res) => {
+      const email = req.body.email;
+      const query = { email: email };
+      const options = { upsert: true };
+      const updateDoc = { $set: req.body };
+      const result = await usersCollection.updateOne(query, updateDoc, options);
       res.json(result);
     });
     // DELETE API to delete specific order
