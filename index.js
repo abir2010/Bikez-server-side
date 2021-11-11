@@ -51,8 +51,8 @@ async function run() {
       res.json(result);
     });
     // GET API to find wheather admin or normal user
-    app.get("/users", async (req, res) => {
-      const email = req.query.email;
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
       const query = { email: email };
       const cursor = await usersCollection.findOne(query);
       let isAdmin = false;
