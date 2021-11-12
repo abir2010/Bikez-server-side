@@ -109,9 +109,7 @@ async function run() {
     // PUT API to make admin
     app.put("/allusers", async (req, res) => {
       const email = req.body.email;
-      console.log(email);
       const filter = { email: email };
-      console.log(filter);
       const updateDoc = {
         $set: {
           role: "Admin",
@@ -127,6 +125,7 @@ async function run() {
       const result = await ordersCollection.deleteOne(query);
       res.json(result);
     });
+    // DELETE API to delete single product
     app.delete("/products", async (req, res) => {
       const id = req.query.id;
       const query = { _id: ObjectId(id) };
